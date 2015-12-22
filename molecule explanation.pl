@@ -127,12 +127,9 @@ molecule_some_errors(M,[An|T],NumberOfErrors):- NumberOfErrors > 0, atom_name(A,
 molecule_some_errors([_|M],[x|T],NumberOfErrors):-NumberOfErrors>0, NewErrors is NumberOfErrors-1, molecule_some_errors(M,T,NewErrors).
 
 %molecule_errors(M,L): finds the smallest value of N for which molecule_some_errors(M,L,N) holds.
-molecule_errors(M,L):-molecule_min_max_errors(M,L,N,0).
-
-%molecule_min_max_errors(M,L,-N_correct,+N_attempt): helper function.
-molecule_min_max_errors(M,L,N_correct,N):-( molecule_some_errors(M,L,N) -> N_correct = N; N1 is N+1, molecule_min_max_errors(M,L,N_correct,N1)).
+molecule_errors(M,L):-length(M,Nmax),between(0,Nmax,N),molecule_some_errors(M,_,N),!,molecule_some_errors(M,L,N).
 
 %fullnames(Labb,Lname): Labb is a list of abbreviations of chemical elements and Lname is a list of the corresponding English names.
 fullnames([Habb|Tabb],[Hname|Tname]):-atom_name(_,Habb,Hname),fullnames(Tabb,Tname).
-fullnames([x|Tabb],[mystery_element|Tname]):-fullnames(Tabb,Tname).
+fullnames([x|Tabb],[###|Tname]):-fullnames(Tabb,Tname).
 fullnames([],[]).
